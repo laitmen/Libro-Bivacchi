@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Bivacchi con Hello Kitty</title>
     <style>
-        /* Tutti i tuoi stili CSS rimangono uguali */
+        /* Stile del cursore personalizzato */
         html {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23FF69B4" d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14 14-6.2 14-14S23.8 2 16 2zm0 2c6.6 0 12 5.4 12 12s-5.4 12-12 12S4 22.6 4 16 9.4 4 16 4z"/><circle fill="%23FF69B4" cx="11" cy="11" r="2"/><circle fill="%23FF69B4" cx="21" cy="11" r="2"/><path fill="%23FF69B4" d="M16 20c-2.8 0-5-2.2-5-5h2c0 1.7 1.3 3 3 3s3-1.3 3-3h2c0 2.8-2.2 5-5 5z"/><path fill="%23FF69B4" d="M16 24c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2z"/></svg>') 16 16, auto;
         }
@@ -20,53 +20,70 @@
             margin: 0;
             padding: 20px;
             color: #333;
+            background-color: #fff9fb;
         }
         h1 {
-            color: #2c3e50;
+            color: #d23669;
             text-align: center;
+            margin-bottom: 30px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
+            border: 1px solid #ffb6c1;
+            padding: 10px;
             text-align: left;
         }
         th {
-            background-color: #f2f2f2;
+            background-color: #ffebf1;
+            color: #d23669;
         }
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #fff0f5;
+        }
+        tr:hover {
+            background-color: #ffe6ee;
         }
         button {
-            background-color: #4CAF50;
+            background-color: #ff69b4;
             color: white;
             padding: 10px 15px;
             border: none;
+            border-radius: 5px;
             cursor: pointer;
             margin: 10px 0;
+            transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #45a049;
+            background-color: #ff1493;
         }
         .edit-form {
             display: none;
             margin: 20px 0;
-            padding: 15px;
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #fff0f5;
+            border: 1px solid #ffb6c1;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .edit-form h3 {
+            color: #d23669;
+            margin-top: 0;
         }
         .edit-form input, .edit-form select {
-            margin: 5px 0;
-            padding: 8px;
+            margin: 8px 0;
+            padding: 10px;
             width: 100%;
+            border: 1px solid #ffb6c1;
+            border-radius: 5px;
         }
         .annotations-box {
             margin: 20px 0;
-            padding: 15px;
+            padding: 20px;
             background-color: #f0f7ff;
             border: 1px solid #b3d1ff;
             border-radius: 5px;
@@ -77,10 +94,11 @@
         }
         #annotationsText {
             width: 100%;
-            min-height: 80px;
-            padding: 8px;
+            min-height: 100px;
+            padding: 10px;
             margin-bottom: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid #b3d1ff;
+            border-radius: 5px;
             font-family: Arial, sans-serif;
         }
         #saveAnnotations {
@@ -95,52 +113,38 @@
             cursor: pointer;
             background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23ff0000"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>') no-repeat;
             border: none;
+            transition: transform 0.2s;
+        }
+        .delete-btn:hover {
+            transform: scale(1.1);
         }
         .loading {
             text-align: center;
             padding: 20px;
             font-style: italic;
-            color: #666;
+            color: #ff69b4;
         }
-        .error {
-            color: red;
-            text-align: center;
-            padding: 20px;
+        .info-message {
+            background-color: #e6f7ff;
+            border: 1px solid #b3e0ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            color: #0066cc;
         }
     </style>
 </head>
 <body>
-    <h1>Lista Bivacchi</h1>
+    <h1>🌸 Lista Bivacchi Hello Kitty 🌸</h1>
+    
+    <div class="info-message">
+        ℹ️ I dati vengono caricati dal Gist pubblico. Per modificare i dati, contatta l'amministratore.
+    </div>
     
     <!-- Box annotazioni -->
     <div class="annotations-box">
         <h3>Annotazioni</h3>
-        <textarea id="annotationsText" placeholder="Scrivi qui note generali..."></textarea>
-        <button id="saveAnnotations">Salva Annotazioni</button>
-    </div>
-    
-    <!-- Pulsante aggiungi bivacco -->
-    <button id="editButton">Aggiungi Bivacco</button>
-    
-    <!-- Form per nuovo bivacco -->
-    <div id="editForm" class="edit-form">
-        <h3>Nuovo Bivacco</h3>
-        <input type="text" id="nome" placeholder="Nome" required>
-        <input type="text" id="provincia" placeholder="Provincia">
-        <input type="number" id="altitudine" placeholder="Altitudine (mt)">
-        <input type="number" id="postiLetto" placeholder="Posti letto">
-        <select id="camino">
-            <option value="">Camino...</option>
-            <option value="Si">Si</option>
-            <option value="No">No</option>
-        </select>
-        <select id="stufa">
-            <option value="">Stufa...</option>
-            <option value="Si">Si</option>
-            <option value="No">No</option>
-        </select>
-        <input type="number" id="qualita" placeholder="Qualità (1-10)" min="1" max="10">
-        <button id="saveButton">Salva</button>
+        <textarea id="annotationsText" placeholder="Scrivi qui note generali..." readonly></textarea>
     </div>
     
     <!-- Tabella bivacchi -->
@@ -150,214 +154,82 @@
                 <th>#</th>
                 <th>Nome</th>
                 <th>Provincia</th>
-                <th>Altitudine</th>
+                <th>Altitudine (m)</th>
                 <th>Posti letto</th>
                 <th>Camino</th>
                 <th>Stufa</th>
                 <th>Qualità</th>
-                <th>Elimina</th>
             </tr>
         </thead>
         <tbody id="tableBody">
             <tr>
-                <td colspan="9" class="loading">Caricamento dati in corso...</td>
+                <td colspan="8" class="loading">Caricamento dati in corso...</td>
             </tr>
         </tbody>
     </table>
 
     <script>
-        // CONFIGURAZIONE - MODIFICA QUESTI VALORI
-        const GIST_ID = "IL_TUO_GIST_ID"; // Sostituisci con l'ID del tuo Gist
-        const FILENAME = "bivacchi.json"; // Nome del file nel Gist
+        // Configurazione Gist
+        const GIST_ID = "43c3055909259ddbc7e4c61525ac998a";
+        const GIST_URL = `https://gist.githubusercontent.com/laitmen/${GIST_ID}/raw`;
         
         // Elementi DOM
-        const editButton = document.getElementById('editButton');
-        const editForm = document.getElementById('editForm');
-        const saveButton = document.getElementById('saveButton');
         const tableBody = document.getElementById('tableBody');
         const annotationsText = document.getElementById('annotationsText');
-        const saveAnnotationsBtn = document.getElementById('saveAnnotations');
-
-        // Dati iniziali
-        let bivacchi = [];
-        let annotations = '';
-
-        // Mostra/nascondi form
-        editButton.addEventListener('click', () => {
-            editForm.style.display = editForm.style.display === 'block' ? 'none' : 'block';
-        });
-
-        // Salva nuovo bivacco
-        saveButton.addEventListener('click', async () => {
-            const nuovoBivacco = {
-                nome: document.getElementById('nome').value || "Senza nome",
-                provincia: document.getElementById('provincia').value || "-",
-                altitudine: document.getElementById('altitudine').value || "-",
-                postiLetto: document.getElementById('postiLetto').value || "-",
-                camino: document.getElementById('camino').value || "-",
-                stufa: document.getElementById('stufa').value || "-",
-                qualita: document.getElementById('qualita').value || "-"
-            };
-
-            try {
-                // Aggiungi il nuovo bivacco
-                bivacchi.push(nuovoBivacco);
-                
-                // Salva i dati
-                await saveDataToGist({
-                    bivacchi: bivacchi,
-                    annotazioni: annotationsText.value
-                });
-                
-                // Ricarica la tabella
-                await loadData();
-                editForm.style.display = 'none';
-                resetForm();
-            } catch (error) {
-                showError("Errore durante il salvataggio: " + error.message);
-            }
-        });
-
-        // Salva annotazioni
-        saveAnnotationsBtn.addEventListener('click', async () => {
-            try {
-                await saveDataToGist({
-                    bivacchi: bivacchi,
-                    annotazioni: annotationsText.value
-                });
-                alert("Annotazioni salvate!");
-            } catch (error) {
-                showError("Errore durante il salvataggio delle annotazioni: " + error.message);
-            }
-        });
-
+        
         // Carica i dati iniziali
         async function loadData() {
             try {
-                const data = await fetchDataFromGist();
-                bivacchi = data.bivacchi || [];
-                annotationsText.value = data.annotazioni || '';
+                const response = await fetch(GIST_URL);
+                if (!response.ok) throw new Error('Errore nel caricamento dei dati');
                 
-                renderTable();
+                const data = await response.json();
+                renderTable(data.bivacchi || []);
+                annotationsText.value = data.annotazioni || 'Nessuna annotazione presente';
             } catch (error) {
-                showError("Errore durante il caricamento: " + error.message);
+                console.error("Errore:", error);
+                renderTable([
+                    {nome:"Bivacco X", provincia:"Belluno", altitudine:1500, postiLetto:4, camino:"Si", stufa:"Si", qualita:8},
+                    {nome:"Bivacco Y", provincia:"Trento", altitudine:2100, postiLetto:6, camino:"No", stufa:"Si", qualita:6}
+                ]);
+                annotationsText.value = "Impossibile caricare le annotazioni dal server";
             }
         }
-
+        
         // Renderizza la tabella
-        function renderTable() {
+        function renderTable(bivacchi) {
             tableBody.innerHTML = '';
             
             if (bivacchi.length === 0) {
-                tableBody.innerHTML = '<tr><td colspan="9">Nessun bivacco presente. Aggiungine uno!</td></tr>';
+                tableBody.innerHTML = '<tr><td colspan="8">Nessun bivacco presente</td></tr>';
                 return;
             }
             
             bivacchi.forEach((bivacco, index) => {
                 const row = document.createElement('tr');
+                
+                // Formatta i campi vuoti
+                const formatValue = (value) => value === undefined || value === '' ? '-' : value;
+                
                 row.innerHTML = `
                     <td>${index + 1}</td>
-                    <td>${bivacco.nome}</td>
-                    <td>${bivacco.provincia}</td>
-                    <td>${bivacco.altitudine}</td>
-                    <td>${bivacco.postiLetto}</td>
-                    <td>${bivacco.camino}</td>
-                    <td>${bivacco.stufa}</td>
-                    <td>${bivacco.qualita}</td>
-                    <td><button class="delete-btn" data-index="${index}"></button></td>
+                    <td>${formatValue(bivacco.nome)}</td>
+                    <td>${formatValue(bivacco.provincia)}</td>
+                    <td>${formatValue(bivacco.altitudine)}</td>
+                    <td>${formatValue(bivacco.postiLetto)}</td>
+                    <td>${formatValue(bivacco.camino)}</td>
+                    <td>${formatValue(bivacco.stufa)}</td>
+                    <td>${formatValue(bivacco.qualita)}</td>
                 `;
                 tableBody.appendChild(row);
             });
-
-            // Aggiungi event listener ai pulsanti di eliminazione
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', async (e) => {
-                    const index = e.target.getAttribute('data-index');
-                    try {
-                        bivacchi.splice(index, 1);
-                        await saveDataToGist({
-                            bivacchi: bivacchi,
-                            annotazioni: annotationsText.value
-                        });
-                        await loadData();
-                    } catch (error) {
-                        showError("Errore durante l'eliminazione: " + error.message);
-                    }
-                });
-            });
         }
-
-        // Funzione per leggere dati dal Gist
-        async function fetchDataFromGist() {
-            try {
-                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
-                if (!response.ok) throw new Error('Gist non trovato');
-                
-                const gistData = await response.json();
-                const fileContent = gistData.files[FILENAME]?.content;
-                
-                if (!fileContent) throw new Error('File non trovato nel Gist');
-                
-                return JSON.parse(fileContent);
-            } catch (error) {
-                console.error("Errore nel fetch del Gist:", error);
-                throw error;
-            }
-        }
-
-        // Funzione per salvare dati su Gist
-        async function saveDataToGist(data) {
-            try {
-                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
-                    method: 'PATCH',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({
-                        files: {
-                            [FILENAME]: {
-                                content: JSON.stringify(data, null, 2)
-                            }
-                        }
-                    })
-                });
-                
-                if (!response.ok) {
-                    throw new Error('Errore durante il salvataggio');
-                }
-                
-                return true;
-            } catch (error) {
-                console.error("Errore nel salvataggio su Gist:", error);
-                throw error;
-            }
-        }
-
-        // Funzioni di supporto
-        function resetForm() {
-            document.getElementById('nome').value = '';
-            document.getElementById('provincia').value = '';
-            document.getElementById('altitudine').value = '';
-            document.getElementById('postiLetto').value = '';
-            document.getElementById('camino').value = '';
-            document.getElementById('stufa').value = '';
-            document.getElementById('qualita').value = '';
-        }
-
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'error';
-            errorDiv.textContent = message;
-            document.body.insertBefore(errorDiv, document.body.firstChild);
-            
-            setTimeout(() => {
-                errorDiv.remove();
-            }, 5000);
-        }
-
+        
         // Inizializza la pagina
         loadData();
+        
+        // Aggiorna i dati ogni 5 minuti
+        setInterval(loadData, 300000);
     </script>
 </body>
 </html>
