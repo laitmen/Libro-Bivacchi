@@ -1,4 +1,0 @@
-[
-    {"nome":"Bivacco X","provincia":"Belluno","altitudine":1500,"postiLetto":4,"camino":"Si","stufa":"Si","qualita":8},
-    {"nome":"Bivacco Y","provincia":"Trento","altitudine":2100,"postiLetto":6,"camino":"No","stufa":"Si","qualita":6}
-]
