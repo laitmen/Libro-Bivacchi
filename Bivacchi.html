@@ -35,7 +35,9 @@
 
     // Aggiunge un bivacco
     async function aggiungiBivacco(nome) {
-      await addDoc(collection(db, "bivacchi"), { nome });
+      await addDoc(collection(db, "bivacchi"), {
+  nome: nome
+});
       caricaBivacchi();
     }
 
