@@ -3,19 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Bivacchi con Hello Kitty</title>
+    <title>Lista Bivacchi</title>
     <style>
-        /* Stile del cursore personalizzato */
-        html {
-            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23FF69B4" d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14 14-6.2 14-14S23.8 2 16 2zm0 2c6.6 0 12 5.4 12 12s-5.4 12-12 12S4 22.6 4 16 9.4 4 16 4z"/><circle fill="%23FF69B4" cx="11" cy="11" r="2"/><circle fill="%23FF69B4" cx="21" cy="11" r="2"/><path fill="%23FF69B4" d="M16 20c-2.8 0-5-2.2-5-5h2c0 1.7 1.3 3 3 3s3-1.3 3-3h2c0 2.8-2.2 5-5 5z"/><path fill="%23FF69B4" d="M16 24c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2z"/></svg>') 16 16, auto;
-        }
-        
-        /* Elementi cliccabili devono mantenere il puntatore standard */
-        button, input, select, textarea, .delete-btn {
-            cursor: default;
-        }
-
-        /* Stili esistenti */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -66,31 +55,6 @@
             padding: 8px;
             width: 100%;
         }
-        .annotations-box {
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #f0f7ff;
-            border: 1px solid #b3d1ff;
-            border-radius: 5px;
-        }
-        .annotations-box h3 {
-            margin-top: 0;
-            color: #0066cc;
-        }
-        #annotationsText {
-            width: 100%;
-            min-height: 80px;
-            padding: 8px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            font-family: Arial, sans-serif;
-        }
-        #saveAnnotations {
-            background-color: #0066cc;
-        }
-        #saveAnnotations:hover {
-            background-color: #0052a3;
-        }
         .delete-btn {
             width: 24px;
             height: 24px;
@@ -103,17 +67,8 @@
 <body>
     <h1>Lista Bivacchi</h1>
     
-    <!-- Box annotazioni -->
-    <div class="annotations-box">
-        <h3>Annotazioni</h3>
-        <textarea id="annotationsText" placeholder="Scrivi qui note generali..."></textarea>
-        <button id="saveAnnotations">Salva Annotazioni</button>
-    </div>
-    
-    <!-- Pulsante aggiungi bivacco -->
     <button id="editButton">Aggiungi Bivacco</button>
     
-    <!-- Form per nuovo bivacco -->
     <div id="editForm" class="edit-form">
         <h3>Nuovo Bivacco</h3>
         <input type="text" id="nome" placeholder="Nome" required>
@@ -134,7 +89,6 @@
         <button id="saveButton">Salva</button>
     </div>
     
-    <!-- Tabella bivacchi -->
     <table id="bivacchiTable">
         <thead>
             <tr>
@@ -163,18 +117,12 @@
 
         // Carica dati salvati o usa quelli di default
         let bivacchi = JSON.parse(localStorage.getItem('bivacchi')) || defaultBivacchi;
-        let annotations = localStorage.getItem('annotazioni') || '';
 
         // Elementi DOM
         const editButton = document.getElementById('editButton');
         const editForm = document.getElementById('editForm');
         const saveButton = document.getElementById('saveButton');
         const tableBody = document.getElementById('tableBody');
-        const annotationsText = document.getElementById('annotationsText');
-        const saveAnnotationsBtn = document.getElementById('saveAnnotations');
-
-        // Inizializza annotazioni
-        annotationsText.value = annotations;
 
         // Mostra/nascondi form
         editButton.addEventListener('click', () => {
@@ -198,12 +146,6 @@
             renderTable();
             editForm.style.display = 'none';
             resetForm();
-        });
-
-        // Salva annotazioni
-        saveAnnotationsBtn.addEventListener('click', () => {
-            localStorage.setItem('annotazioni', annotationsText.value);
-            alert("Annotazioni salvate!");
         });
 
         // Renderizza la tabella
