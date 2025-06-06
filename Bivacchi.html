@@ -5,17 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista Bivacchi con Hello Kitty</title>
     <style>
-        /* Stile del cursore personalizzato */
+        /* Tutti i tuoi stili CSS rimangono uguali */
         html {
             cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill="%23FF69B4" d="M16 2C8.2 2 2 8.2 2 16s6.2 14 14 14 14-6.2 14-14S23.8 2 16 2zm0 2c6.6 0 12 5.4 12 12s-5.4 12-12 12S4 22.6 4 16 9.4 4 16 4z"/><circle fill="%23FF69B4" cx="11" cy="11" r="2"/><circle fill="%23FF69B4" cx="21" cy="11" r="2"/><path fill="%23FF69B4" d="M16 20c-2.8 0-5-2.2-5-5h2c0 1.7 1.3 3 3 3s3-1.3 3-3h2c0 2.8-2.2 5-5 5z"/><path fill="%23FF69B4" d="M16 24c-1.1 0-2-.9-2-2h4c0 1.1-.9 2-2 2z"/></svg>') 16 16, auto;
         }
         
-        /* Elementi cliccabili devono mantenere il puntatore standard */
         button, input, select, textarea, .delete-btn {
             cursor: default;
         }
 
-        /* Stili esistenti */
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
@@ -104,6 +102,11 @@
             font-style: italic;
             color: #666;
         }
+        .error {
+            color: red;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
@@ -163,6 +166,10 @@
     </table>
 
     <script>
+        // CONFIGURAZIONE - MODIFICA QUESTI VALORI
+        const GIST_ID = "IL_TUO_GIST_ID"; // Sostituisci con l'ID del tuo Gist
+        const FILENAME = "bivacchi.json"; // Nome del file nel Gist
+        
         // Elementi DOM
         const editButton = document.getElementById('editButton');
         const editForm = document.getElementById('editForm');
@@ -171,9 +178,9 @@
         const annotationsText = document.getElementById('annotationsText');
         const saveAnnotationsBtn = document.getElementById('saveAnnotations');
 
-        // File di testo per i dati
-        const DATA_FILE = 'testo.txt';
-        const ANNOTATIONS_FILE = 'annotazioni.txt';
+        // Dati iniziali
+        let bivacchi = [];
+        let annotations = '';
 
         // Mostra/nascondi form
         editButton.addEventListener('click', () => {
@@ -193,61 +200,52 @@
             };
 
             try {
-                // Leggi i dati esistenti
-                const response = await fetch(DATA_FILE);
-                let data = await response.text();
-                let bivacchi = data ? JSON.parse(data) : [];
-                
                 // Aggiungi il nuovo bivacco
                 bivacchi.push(nuovoBivacco);
                 
                 // Salva i dati
-                await saveDataToFile(DATA_FILE, JSON.stringify(bivacchi));
+                await saveDataToGist({
+                    bivacchi: bivacchi,
+                    annotazioni: annotationsText.value
+                });
                 
                 // Ricarica la tabella
                 await loadData();
                 editForm.style.display = 'none';
                 resetForm();
             } catch (error) {
-                console.error("Errore durante il salvataggio:", error);
-                alert("Si è verificato un errore durante il salvataggio.");
+                showError("Errore durante il salvataggio: " + error.message);
             }
         });
 
         // Salva annotazioni
         saveAnnotationsBtn.addEventListener('click', async () => {
             try {
-                await saveDataToFile(ANNOTATIONS_FILE, annotationsText.value);
+                await saveDataToGist({
+                    bivacchi: bivacchi,
+                    annotazioni: annotationsText.value
+                });
                 alert("Annotazioni salvate!");
             } catch (error) {
-                console.error("Errore durante il salvataggio delle annotazioni:", error);
-                alert("Si è verificato un errore durante il salvataggio delle annotazioni.");
+                showError("Errore durante il salvataggio delle annotazioni: " + error.message);
             }
         });
 
         // Carica i dati iniziali
         async function loadData() {
             try {
-                // Carica bivacchi
-                const response = await fetch(DATA_FILE);
-                const data = await response.text();
-                const bivacchi = data ? JSON.parse(data) : [];
+                const data = await fetchDataFromGist();
+                bivacchi = data.bivacchi || [];
+                annotationsText.value = data.annotazioni || '';
                 
-                // Carica annotazioni
-                const annotationsResponse = await fetch(ANNOTATIONS_FILE);
-                const annotationsData = await annotationsResponse.text();
-                annotationsText.value = annotationsData || '';
-                
-                // Renderizza la tabella
-                renderTable(bivacchi);
+                renderTable();
             } catch (error) {
-                console.error("Errore durante il caricamento dei dati:", error);
-                tableBody.innerHTML = '<tr><td colspan="9">Errore durante il caricamento dei dati. Ricarica la pagina.</td></tr>';
+                showError("Errore durante il caricamento: " + error.message);
             }
         }
 
         // Renderizza la tabella
-        function renderTable(bivacchi) {
+        function renderTable() {
             tableBody.innerHTML = '';
             
             if (bivacchi.length === 0) {
@@ -276,38 +274,53 @@
                 btn.addEventListener('click', async (e) => {
                     const index = e.target.getAttribute('data-index');
                     try {
-                        // Leggi i dati esistenti
-                        const response = await fetch(DATA_FILE);
-                        let data = await response.text();
-                        let bivacchi = data ? JSON.parse(data) : [];
-                        
-                        // Rimuovi il bivacco
                         bivacchi.splice(index, 1);
-                        
-                        // Salva i dati
-                        await saveDataToFile(DATA_FILE, JSON.stringify(bivacchi));
-                        
-                        // Ricarica la tabella
+                        await saveDataToGist({
+                            bivacchi: bivacchi,
+                            annotazioni: annotationsText.value
+                        });
                         await loadData();
                     } catch (error) {
-                        console.error("Errore durante l'eliminazione:", error);
-                        alert("Si è verificato un errore durante l'eliminazione.");
+                        showError("Errore durante l'eliminazione: " + error.message);
                     }
                 });
             });
         }
 
-        // Funzione per salvare dati su file (simulata)
-        async function saveDataToFile(filename, data) {
-            // Nota: Questo è un approccio semplificato che funziona solo con alcuni server
-            // In un ambiente reale, avresti bisogno di un backend per scrivere su file
+        // Funzione per leggere dati dal Gist
+        async function fetchDataFromGist() {
             try {
-                const response = await fetch(filename, {
-                    method: 'POST',
+                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`);
+                if (!response.ok) throw new Error('Gist non trovato');
+                
+                const gistData = await response.json();
+                const fileContent = gistData.files[FILENAME]?.content;
+                
+                if (!fileContent) throw new Error('File non trovato nel Gist');
+                
+                return JSON.parse(fileContent);
+            } catch (error) {
+                console.error("Errore nel fetch del Gist:", error);
+                throw error;
+            }
+        }
+
+        // Funzione per salvare dati su Gist
+        async function saveDataToGist(data) {
+            try {
+                const response = await fetch(`https://api.github.com/gists/${GIST_ID}`, {
+                    method: 'PATCH',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Accept': 'application/vnd.github.v3+json'
                     },
-                    body: JSON.stringify({ content: data })
+                    body: JSON.stringify({
+                        files: {
+                            [FILENAME]: {
+                                content: JSON.stringify(data, null, 2)
+                            }
+                        }
+                    })
                 });
                 
                 if (!response.ok) {
@@ -316,7 +329,7 @@
                 
                 return true;
             } catch (error) {
-                console.error("Errore nel salvataggio su file:", error);
+                console.error("Errore nel salvataggio su Gist:", error);
                 throw error;
             }
         }
@@ -330,6 +343,17 @@
             document.getElementById('camino').value = '';
             document.getElementById('stufa').value = '';
             document.getElementById('qualita').value = '';
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            document.body.insertBefore(errorDiv, document.body.firstChild);
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
         }
 
         // Inizializza la pagina
