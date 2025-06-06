@@ -1,16 +1,233 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
   <meta charset="UTF-8">
-  <title>Lista Bivacchi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Libro dei Bivacchi</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    
+    h1 {
+      color: #2c3e50;
+      text-align: center;
+      margin-bottom: 30px;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+    
+    .form-container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+    }
+    
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 15px;
+      gap: 15px;
+    }
+    
+    .form-group {
+      flex: 1;
+      min-width: 200px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+    
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    #bivacchi-list {
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+    
+    .bivacco-item {
+      border-bottom: 1px solid #eee;
+      padding: 15px 0;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .bivacco-item:last-child {
+      border-bottom: none;
+    }
+    
+    .bivacco-info {
+      flex: 1;
+      min-width: 300px;
+    }
+    
+    .bivacco-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2c3e50;
+      margin-bottom: 5px;
+    }
+    
+    .bivacco-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .detail-icon {
+      color: #3498db;
+    }
+    
+    .bivacco-actions {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .delete-btn {
+      background-color: #e74c3c;
+    }
+    
+    .delete-btn:hover {
+      background-color: #c0392b;
+    }
+    
+    .quality-stars {
+      color: #f1c40f;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Lista Bivacchi</h1>
-
-  <input type="text" id="nome" placeholder="Nome del bivacco">
-  <button id="aggiungi">Aggiungi</button>
-
-  <ul id="elenco"></ul>
+  <h1>Libro dei Bivacchi</h1>
+  
+  <div class="form-container">
+    <h2>Aggiungi un nuovo bivacco</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="nome">Nome del bivacco*</label>
+        <input type="text" id="nome" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="provincia">Provincia*</label>
+        <select id="provincia" required>
+          <option value="">Seleziona...</option>
+          <option value="AG">Agrigento</option>
+          <option value="AL">Alessandria</option>
+          <!-- Aggiungi tutte le province italiane -->
+          <option value="TO">Torino</option>
+          <option value="AO">Aosta</option>
+          <option value="BZ">Bolzano</option>
+          <option value="TN">Trento</option>
+          <!-- Continua con le altre province -->
+        </select>
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label for="altitudine">Altitudine (m)</label>
+        <input type="number" id="altitudine" min="0" step="1">
+      </div>
+      
+      <div class="form-group">
+        <label for="posti-letto">Posti letto</label>
+        <input type="number" id="posti-letto" min="0" step="1">
+      </div>
+      
+      <div class="form-group">
+        <label for="qualita">Qualità (1-10)</label>
+        <input type="number" id="qualita" min="1" max="10" step="1">
+      </div>
+    </div>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dotazioni</label>
+        <div class="checkbox-group">
+          <input type="checkbox" id="stufa">
+          <label for="stufa">Stufa</label>
+        </div>
+        <div class="checkbox-group">
+          <input type="checkbox" id="camino">
+          <label for="camino">Camino</label>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <label for="coordinate">Coordinate (lat,long)</label>
+        <input type="text" id="coordinate" placeholder="es. 45.1234, 7.5678">
+      </div>
+    </div>
+    
+    <div class="form-group">
+      <label for="appunti">Appunti</label>
+      <textarea id="appunti"></textarea>
+    </div>
+    
+    <button id="aggiungi">Aggiungi Bivacco</button>
+  </div>
+  
+  <div id="bivacchi-list">
+    <h2>Elenco Bivacchi</h2>
+    <div id="elenco"></div>
+  </div>
 
   <!-- Script Firebase e logica -->
   <script type="module">
@@ -23,7 +240,7 @@
       apiKey: "AIzaSyB3XqupqTSMx2D_o7YRwSSn0K6LrS5b6Jg",
       authDomain: "libro-bivacchi.firebaseapp.com",
       projectId: "libro-bivacchi",
-      storageBucket: "libro-bivacchi.firebasestorage.app",
+      storageBucket: "libro-bivacchi.appspot.com",
       messagingSenderId: "556964605325",
       appId: "1:556964605325:web:85f1bd534c6c357f90e1c4",
       measurementId: "G-7JFDQDCH67"
@@ -34,10 +251,8 @@
     const db = getFirestore(app);
 
     // Aggiunge un bivacco
-    async function aggiungiBivacco(nome) {
-      await addDoc(collection(db, "bivacchi"), {
-  nome: nome
-});
+    async function aggiungiBivacco(bivacco) {
+      await addDoc(collection(db, "bivacchi"), bivacco);
       caricaBivacchi();
     }
 
@@ -46,17 +261,49 @@
       const elenco = document.getElementById("elenco");
       elenco.innerHTML = "";
       const querySnapshot = await getDocs(collection(db, "bivacchi"));
+      
       querySnapshot.forEach((docSnap) => {
-        const li = document.createElement("li");
-        li.textContent = docSnap.data().nome;
-        const btn = document.createElement("button");
-        btn.textContent = "Elimina";
-        btn.onclick = async () => {
-          await deleteDoc(doc(db, "bivacchi", docSnap.id));
+        const data = docSnap.data();
+        const bivaccoItem = document.createElement("div");
+        bivaccoItem.className = "bivacco-item";
+        
+        // Creazione della card del bivacco
+        let stars = '';
+        if (data.qualita) {
+          stars = '★'.repeat(data.qualita) + '☆'.repeat(10 - data.qualita);
+        }
+        
+        let dotazioni = [];
+        if (data.stufa) dotazioni.push("Stufa");
+        if (data.camino) dotazioni.push("Camino");
+        
+        bivaccoItem.innerHTML = `
+          <div class="bivacco-info">
+            <div class="bivacco-title">${data.nome}</div>
+            ${data.provincia ? `<div>Provincia: ${data.provincia}</div>` : ''}
+            <div class="bivacco-details">
+              ${data.altitudine ? `<div class="detail-item"><span class="detail-icon">⛰</span> ${data.altitudine}m</div>` : ''}
+              ${data.postiLetto ? `<div class="detail-item"><span class="detail-icon">🛏</span> ${data.postiLetto} posti</div>` : ''}
+              ${data.qualita ? `<div class="detail-item"><span class="detail-icon">⭐</span> <span class="quality-stars">${stars}</span></div>` : ''}
+              ${dotazioni.length > 0 ? `<div class="detail-item"><span class="detail-icon">🔧</span> ${dotazioni.join(', ')}</div>` : ''}
+            </div>
+            ${data.appunti ? `<div style="margin-top: 10px; font-style: italic;">${data.appunti}</div>` : ''}
+            ${data.coordinate ? `<div style="margin-top: 5px; font-size: 12px; color: #666;">Coordinate: ${data.coordinate}</div>` : ''}
+          </div>
+          <div class="bivacco-actions">
+            <button class="delete-btn" data-id="${docSnap.id}">Elimina</button>
+          </div>
+        `;
+        
+        elenco.appendChild(bivaccoItem);
+      });
+      
+      // Aggiungi event listener ai pulsanti di eliminazione
+      document.querySelectorAll('.delete-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          await deleteDoc(doc(db, "bivacchi", btn.dataset.id));
           caricaBivacchi();
-        };
-        li.appendChild(btn);
-        elenco.appendChild(li);
+        });
       });
     }
 
@@ -64,9 +311,36 @@
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("aggiungi").addEventListener("click", () => {
         const nome = document.getElementById("nome").value.trim();
-        if (nome) {
-          aggiungiBivacco(nome);
+        const provincia = document.getElementById("provincia").value;
+        
+        if (nome && provincia) {
+          const bivacco = {
+            nome: nome,
+            provincia: provincia,
+            altitudine: document.getElementById("altitudine").value ? parseInt(document.getElementById("altitudine").value) : null,
+            postiLetto: document.getElementById("posti-letto").value ? parseInt(document.getElementById("posti-letto").value) : null,
+            qualita: document.getElementById("qualita").value ? parseInt(document.getElementById("qualita").value) : null,
+            stufa: document.getElementById("stufa").checked,
+            camino: document.getElementById("camino").checked,
+            coordinate: document.getElementById("coordinate").value.trim(),
+            appunti: document.getElementById("appunti").value.trim(),
+            dataInserimento: new Date().toISOString()
+          };
+          
+          aggiungiBivacco(bivacco);
+          
+          // Resetta il form
           document.getElementById("nome").value = "";
+          document.getElementById("provincia").value = "";
+          document.getElementById("altitudine").value = "";
+          document.getElementById("posti-letto").value = "";
+          document.getElementById("qualita").value = "";
+          document.getElementById("stufa").checked = false;
+          document.getElementById("camino").checked = false;
+          document.getElementById("coordinate").value = "";
+          document.getElementById("appunti").value = "";
+        } else {
+          alert("Per favore, inserisci almeno il nome e la provincia del bivacco.");
         }
       });
 
