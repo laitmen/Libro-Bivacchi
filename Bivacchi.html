@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Bivacchi Modificabile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .edit-form {
+            display: none;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+        }
+        .edit-form input, .edit-form select {
+            margin: 5px 0;
+            padding: 8px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Lista Bivacchi</h1>
+    
+    <button id="editButton">Aggiungi Bivacco</button>
+    
+    <div id="editForm" class="edit-form">
+        <h3>Nuovo Bivacco</h3>
+        <input type="text" id="nome" placeholder="Nome" required>
+        <input type="text" id="provincia" placeholder="Provincia">
+        <input type="number" id="altitudine" placeholder="Altitudine (mt)">
+        <input type="number" id="postiLetto" placeholder="Posti letto">
+        <select id="camino">
+            <option value="">Camino...</option>
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+        </select>
+        <select id="stufa">
+            <option value="">Stufa...</option>
+            <option value="Si">Si</option>
+            <option value="No">No</option>
+        </select>
+        <input type="number" id="qualita" placeholder="Qualità (1-10)" min="1" max="10">
+        <button id="saveButton">Salva</button>
+    </div>
+    
+    <table id="bivacchiTable">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Nome</th>
+                <th>Provincia</th>
+                <th>Altitudine</th>
+                <th>Posti letto</th>
+                <th>Camino</th>
+                <th>Stufa</th>
+                <th>Qualità</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody">
+            <!-- I bivacchi verranno aggiunti qui via JavaScript -->
+        </tbody>
+    </table>
+
+    <script>
+        // Dati iniziali (se non ci sono dati salvati)
+        const defaultBivacchi = [
+            { nome: "Bivacco X", provincia: "Belluno", altitudine: 1500, postiLetto: 4, camino: "Si", stufa: "Si", qualita: 8 },
+            { nome: "Bivacco Y", provincia: "Trento", altitudine: 2100, postiLetto: 6, camino: "No", stufa: "Si", qualita: 6 }
+        ];
+
+        let bivacchi = JSON.parse(localStorage.getItem('bivacchi')) || defaultBivacchi;
+
+        // Elementi del DOM
+        const editButton = document.getElementById('editButton');
+        const editForm = document.getElementById('editForm');
+        const saveButton = document.getElementById('saveButton');
+        const tableBody = document.getElementById('tableBody');
+
+        // Mostra/nascondi il form
+        editButton.addEventListener('click', () => {
+            editForm.style.display = editForm.style.display === 'block' ? 'none' : 'block';
+        });
+
+        // Salva un nuovo bivacco
+        saveButton.addEventListener('click', () => {
+            const nuovoBivacco = {
+                nome: document.getElementById('nome').value || "Senza nome",
+                provincia: document.getElementById('provincia').value || "-",
+                altitudine: document.getElementById('altitudine').value || "-",
+                postiLetto: document.getElementById('postiLetto').value || "-",
+                camino: document.getElementById('camino').value || "-",
+                stufa: document.getElementById('stufa').value || "-",
+                qualita: document.getElementById('qualita').value || "-"
+            };
+
+            bivacchi.push(nuovoBivacco);
+            localStorage.setItem('bivacchi', JSON.stringify(bivacchi));
+            renderTable();
+            editForm.style.display = 'none';
+            
+            // Resetta il form
+            document.getElementById('nome').value = '';
+            document.getElementById('provincia').value = '';
+            document.getElementById('altitudine').value = '';
+            document.getElementById('postiLetto').value = '';
+            document.getElementById('camino').value = '';
+            document.getElementById('stufa').value = '';
+            document.getElementById('qualita').value = '';
+        });
+
+        // Renderizza la tabella
+        function renderTable() {
+            tableBody.innerHTML = '';
+            bivacchi.forEach((bivacco, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${bivacco.nome}</td>
+                    <td>${bivacco.provincia}</td>
+                    <td>${bivacco.altitudine}</td>
+                    <td>${bivacco.postiLetto}</td>
+                    <td>${bivacco.camino}</td>
+                    <td>${bivacco.stufa}</td>
+                    <td>${bivacco.qualita}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Inizializza la tabella al caricamento della pagina
+        renderTable();
+    </script>
+</body>
+</html>
