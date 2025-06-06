@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="it">
+<html>
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Lista Bivacchi</title>
 </head>
 <body>
@@ -12,20 +12,21 @@
 
   <ul id="elenco"></ul>
 
-  <!-- QUI va lo script Firebase -->
+  <!-- Script Firebase e logica -->
   <script type="module">
-    // Importa Firebase
+    // Import moduli Firebase da CDN
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-    // 🔁 CONFIGURAZIONE FIREBASE (da sostituire con la tua)
+    // Configurazione del tuo progetto Firebase
     const firebaseConfig = {
-      apiKey: "COPIA_LA_TUA_API_KEY",
-      authDomain: "IL_TUO_PROGETTO.firebaseapp.com",
-      projectId: "IL_TUO_PROJECT_ID",
-      storageBucket: "IL_TUO_PROGETTO.appspot.com",
-      messagingSenderId: "NUMERO",
-      appId: "APP_ID"
+      apiKey: "AIzaSyB3XqupqTSMx2D_o7YRwSSn0K6LrS5b6Jg",
+      authDomain: "libro-bivacchi.firebaseapp.com",
+      projectId: "libro-bivacchi",
+      storageBucket: "libro-bivacchi.firebasestorage.app",
+      messagingSenderId: "556964605325",
+      appId: "1:556964605325:web:85f1bd534c6c357f90e1c4",
+      measurementId: "G-7JFDQDCH67"
     };
 
     // Inizializza Firebase
@@ -38,7 +39,7 @@
       caricaBivacchi();
     }
 
-    // Carica la lista dei bivacchi
+    // Carica tutti i bivacchi
     async function caricaBivacchi() {
       const elenco = document.getElementById("elenco");
       elenco.innerHTML = "";
@@ -57,10 +58,10 @@
       });
     }
 
-    // Quando la pagina è pronta
+    // Al caricamento della pagina
     document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("aggiungi").addEventListener("click", () => {
-        const nome = document.getElementById("nome").value;
+        const nome = document.getElementById("nome").value.trim();
         if (nome) {
           aggiungiBivacco(nome);
           document.getElementById("nome").value = "";
