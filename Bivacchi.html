@@ -1,13 +1,74 @@
 <!DOCTYPE html>
-<html>
+<html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Lista Bivacchi</title>
 </head>
 <body>
   <h1>Lista Bivacchi</h1>
+
   <input type="text" id="nome" placeholder="Nome del bivacco">
   <button id="aggiungi">Aggiungi</button>
+
   <ul id="elenco"></ul>
+
+  <!-- QUI va lo script Firebase -->
+  <script type="module">
+    // Importa Firebase
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    // 🔁 CONFIGURAZIONE FIREBASE (da sostituire con la tua)
+    const firebaseConfig = {
+      apiKey: "COPIA_LA_TUA_API_KEY",
+      authDomain: "IL_TUO_PROGETTO.firebaseapp.com",
+      projectId: "IL_TUO_PROJECT_ID",
+      storageBucket: "IL_TUO_PROGETTO.appspot.com",
+      messagingSenderId: "NUMERO",
+      appId: "APP_ID"
+    };
+
+    // Inizializza Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Aggiunge un bivacco
+    async function aggiungiBivacco(nome) {
+      await addDoc(collection(db, "bivacchi"), { nome });
+      caricaBivacchi();
+    }
+
+    // Carica la lista dei bivacchi
+    async function caricaBivacchi() {
+      const elenco = document.getElementById("elenco");
+      elenco.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "bivacchi"));
+      querySnapshot.forEach((docSnap) => {
+        const li = document.createElement("li");
+        li.textContent = docSnap.data().nome;
+        const btn = document.createElement("button");
+        btn.textContent = "Elimina";
+        btn.onclick = async () => {
+          await deleteDoc(doc(db, "bivacchi", docSnap.id));
+          caricaBivacchi();
+        };
+        li.appendChild(btn);
+        elenco.appendChild(li);
+      });
+    }
+
+    // Quando la pagina è pronta
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("aggiungi").addEventListener("click", () => {
+        const nome = document.getElementById("nome").value;
+        if (nome) {
+          aggiungiBivacco(nome);
+          document.getElementById("nome").value = "";
+        }
+      });
+
+      caricaBivacchi();
+    });
+  </script>
 </body>
 </html>
